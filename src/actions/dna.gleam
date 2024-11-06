@@ -55,7 +55,7 @@ fn into_codons(
     [first, second, third, ..rest] -> {
       let cd = first <> second <> third
       case cd |> codon.get_amino_acid_from_codon() {
-        codon.ResidueClass(codon.Stop(_), _) -> into_codons([], acc)
+        codon.Residue(codon.Stop(_), _) -> into_codons([], acc)
         _ -> into_codons(rest, acc |> list.append([cd]))
       }
     }
@@ -63,7 +63,7 @@ fn into_codons(
   }
 }
 
-pub fn reverse_translate(residues: List(codon.ResidueClass)) -> String {
+pub fn reverse_translate(residues: List(codon.Residue)) -> String {
   residues
   |> list.map(fn(r) { r.residue.codon })
   |> string.join("")

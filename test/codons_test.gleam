@@ -18,14 +18,16 @@ pub fn alternates_test() {
 
 pub fn parse_aa_test() {
   let test1 = codon.get_amino_acid_from_codon("GTT")
-  test1 |> should.equal(codon.ResidueClass(codon.Val, ["GTA", "GTC", "GTG"]))
+  test1
+  |> should.equal(codon.Residue(codon.Val("GTT"), ["GTA", "GTC", "GTG"]))
 
   let test2 = codon.get_amino_acid_from_codon("ATC")
-  test2 |> should.equal(codon.ResidueClass(codon.Ile, ["ATA", "ATT"]))
+  test2 |> should.equal(codon.Residue(codon.Ile("ATC"), ["ATA", "ATT"]))
 
   let test3 = codon.get_amino_acid_from_codon("TTC")
-  test3 |> should.equal(codon.ResidueClass(codon.Phe, ["TTT"]))
+  test3 |> should.equal(codon.Residue(codon.Phe("TTC"), ["TTT"]))
 
   let test4 = codon.get_amino_acid_from_codon("CCC")
-  test4 |> should.equal(codon.ResidueClass(codon.Pro, ["CCA", "CCG", "CCT"]))
+  test4
+  |> should.equal(codon.Residue(codon.Pro("CCC"), ["CCA", "CCG", "CCT"]))
 }
