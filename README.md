@@ -38,9 +38,32 @@ dnalg silent-mutate [-r|--restriction string]
 
 You can find the roadmap for this project here: [ROADMAP.md](ROADMAP.md)
 
-## Development
+## Contributing
+
+### Running the project
 
 ```sh
 gleam run   # Run the project
 gleam test  # Run the tests
 ```
+
+### Adding functionality
+
+-   Use the built-in `cli/` module to add subcommands to the CLI command (when it is complete);
+-   Add new modules according to the flow outlines in the next section.
+
+### Module management
+
+Module structure is as follows:
+
+-   `core/` is for primitives and shared functionality;
+-   `actions/` are abstractions for core for use in commands;
+-   `commands/` are primary functions which run via the CLI.
+
+This is done to keep the code clean and avoid circular dependencies.
+Try to have modules in `actions/` only import from `core/` and `commands/`
+only import from `core/` or `actions/` where possible.
+
+---
+
+All rights reserved. © 2024, Trevor Fox

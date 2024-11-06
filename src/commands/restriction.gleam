@@ -1,9 +1,13 @@
-import actions/codon.{type Residue}
 import actions/dna
+import actions/translation
+
+import core/codon.{Codon}
+import core/residue.{type Residue}
+import core/tools
+
 import gleam/io
 import gleam/list
 import gleam/string
-import tools
 
 pub type RestrictionResult {
   Digested(cuts: Int, fragments: List(String))
@@ -27,18 +31,12 @@ pub type MutationResult {
   CannotCompleteMutation
 }
 
-fn isolate_residue(seq_translation: List(codon.Residue), index: Int) {
-  let #(before, rest) = seq_translation |> list.split(index)
-  let #(middle, after) = rest |> list.split(1)
-  #(before, middle, after)
-}
-
-fn mutate(seq_translation: List(codon.Residue), i: ResidueRange) {
-  let #(b, m, a) = seq_translation |> isolate_residue(i.start)
+fn mutate(seq_translation: List(Residue), i: ResidueRange) {
+  let #(b, m, a) = seq_translation |> translation.isolate_residue(i.start)
   let is_within_range = i.start <= i.end
   case m |> list.first, is_within_range {
     Ok(first), True -> {
-      case first.alternate_codons {
+      case first.alternates {
         [] -> mutate(seq_translation, ResidueRange(i.start + 1, i.end))
         codons -> {
           // Breathe... this is okay :)
@@ -46,7 +44,7 @@ fn mutate(seq_translation: List(codon.Residue), i: ResidueRange) {
 
           let new_translation =
             b
-            |> list.append([codon.get_amino_acid_from_codon(new_codon)])
+            |> list.append([residue.from_codon(Codon(new_codon))])
             |> list.append(a)
 
           let new_sequence = new_translation |> dna.reverse_translate()
@@ -99,7 +97,7 @@ pub fn silently_mutate(sequence sequence: String, recognition site: String) {
     dna.Translation(codons, trimmed) -> {
       let translation =
         codons
-        |> list.map(fn(c) { c |> codon.get_amino_acid_from_codon() })
+        |> list.map(fn(c) { Codon(c) |> residue.from_codon() })
 
       let range =
         ResidueRange(

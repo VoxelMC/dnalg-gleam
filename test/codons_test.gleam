@@ -1,14 +1,15 @@
-import actions/codon
+import core/codon.{Codon}
+import core/residue as r
 import gleeunit/should
 
 pub fn alternates_test() {
-  codon.alternates_for("GTT", [])
+  codon.alternates(Codon("GTT"), [])
   |> should.equal(["GTA", "GTC", "GTG"])
 
-  codon.alternates_for("GTT", ["A"])
+  codon.alternates(Codon("GTT"), ["A"])
   |> should.equal(["GTC", "GTG"])
 
-  codon.alternates_for("GTT", ["A", "C"])
+  codon.alternates(Codon("GTT"), ["A", "C"])
   |> should.equal(["GTG"])
 }
 
@@ -17,17 +18,17 @@ pub fn alternates_test() {
 // debug(#("test4", test4))
 
 pub fn parse_aa_test() {
-  let test1 = codon.get_amino_acid_from_codon("GTT")
+  let test1 = r.from_codon(Codon("GTT"))
   test1
-  |> should.equal(codon.Residue(codon.Val("GTT"), ["GTA", "GTC", "GTG"]))
+  |> should.equal(r.Residue(r.Val, "GTT", "V", ["GTA", "GTC", "GTG"]))
 
-  let test2 = codon.get_amino_acid_from_codon("ATC")
-  test2 |> should.equal(codon.Residue(codon.Ile("ATC"), ["ATA", "ATT"]))
+  let test2 = r.from_codon(Codon("ATC"))
+  test2 |> should.equal(r.Residue(r.Ile, "ATC", "I", ["ATA", "ATT"]))
 
-  let test3 = codon.get_amino_acid_from_codon("TTC")
-  test3 |> should.equal(codon.Residue(codon.Phe("TTC"), ["TTT"]))
+  let test3 = r.from_codon(Codon("TTC"))
+  test3 |> should.equal(r.Residue(r.Phe, "TTC", "F", ["TTT"]))
 
-  let test4 = codon.get_amino_acid_from_codon("CCC")
+  let test4 = r.from_codon(Codon("CCC"))
   test4
-  |> should.equal(codon.Residue(codon.Pro("CCC"), ["CCA", "CCG", "CCT"]))
+  |> should.equal(r.Residue(r.Pro, "CCC", "P", ["CCA", "CCG", "CCT"]))
 }

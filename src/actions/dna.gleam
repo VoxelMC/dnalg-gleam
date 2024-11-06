@@ -1,7 +1,8 @@
-import actions/codon
+import core/codon
+import core/residue.{type Residue, Residue, Stop}
+import core/tools
 import gleam/list
 import gleam/string
-import tools
 
 pub fn validate_base(base: String) {
   case base {
@@ -10,11 +11,14 @@ pub fn validate_base(base: String) {
   }
 }
 
+// TODO: Move this to core/sequence and add DnaSequence type
 pub type DnaTranslation {
   Translation(translation: List(String), trimmed: Int)
   TranslationError(DnaParseError)
 }
 
+// NOTE: Future signature: 
+// pub fn translate(sequence: DnaSequence) -> DnaTranslation
 pub fn translate(sequence: String) -> DnaTranslation {
   let split = sequence |> tools.normalize_sequence() |> string.split_once("ATG")
   case split {
@@ -61,8 +65,8 @@ fn into_codons(
     [] -> Ok(acc)
     [first, second, third, ..rest] -> {
       let cd = first <> second <> third
-      case cd |> codon.get_amino_acid_from_codon() {
-        codon.Residue(codon.Stop(_), _) -> into_codons([], acc)
+      case codon.Codon(cd) |> residue.from_codon() {
+        Residue(Stop, _, _, _) -> into_codons([], acc)
         _ -> into_codons(rest, acc |> list.append([cd]))
       }
     }
@@ -70,9 +74,9 @@ fn into_codons(
   }
 }
 
-pub fn reverse_translate(residues: List(codon.Residue)) -> String {
+pub fn reverse_translate(residues: List(Residue)) -> String {
   residues
-  |> list.map(fn(r) { r.residue.codon })
+  |> list.map(fn(r) { r.codon })
   |> string.join("")
   |> tools.normalize_sequence()
 }
