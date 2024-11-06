@@ -1,4 +1,4 @@
-import actions/restriction
+import commands/restriction
 import gleam/string
 import gleeunit/should
 
