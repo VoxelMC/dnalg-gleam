@@ -3,6 +3,7 @@ import actions/dna
 import gleam/io
 import gleam/list
 import gleam/string
+import tools
 
 pub type RestrictionResult {
   Digested(cuts: Int, fragments: List(String))
@@ -73,6 +74,7 @@ pub fn silently_mutate(sequence sequence: String, recognition site: String) {
   // 0    4       10
   // Then, excise the first residue which can be silently mutated, and mutate
   // it!
+  let sequence = sequence |> tools.normalize_sequence()
 
   let recog_start = case sequence |> string.split_once(on: site) {
     Ok(#(before, _)) -> {
@@ -94,20 +96,20 @@ pub fn silently_mutate(sequence sequence: String, recognition site: String) {
   let seq = sequence |> dna.translate()
 
   case seq {
-    Ok(codons) -> {
+    dna.Translation(codons, trimmed) -> {
       let translation =
         codons
         |> list.map(fn(c) { c |> codon.get_amino_acid_from_codon() })
 
       let range =
         ResidueRange(
-          base_to_res_index(recog_start),
-          base_to_res_index(recog_end),
+          base_to_res_index(recog_start - trimmed),
+          base_to_res_index(recog_end - trimmed),
         )
 
       translation
       |> mutate(range)
     }
-    Error(_) -> panic
+    dna.TranslationError(_) -> panic
   }
 }

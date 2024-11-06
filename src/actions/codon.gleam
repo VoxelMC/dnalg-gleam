@@ -1,5 +1,6 @@
 import gleam/list
 import gleam/string
+import tools
 
 // rename this module in the future
 
@@ -38,6 +39,9 @@ pub type Residue {
 }
 
 pub fn alternates_for(codon codon: String, exclude exclude: List(String)) {
+  let codon = codon |> tools.normalize_sequence()
+  let exclude = exclude |> list.map(fn(s) { s |> tools.normalize_sequence() })
+
   let assert [first, middle, last] = codon |> string.split("")
   let bases =
     ["T", "C", "A", "G"]
@@ -53,6 +57,7 @@ pub fn alternates_for(codon codon: String, exclude exclude: List(String)) {
 }
 
 pub fn get_amino_acid_from_codon(codon: String) {
+  let codon = codon |> tools.normalize_sequence()
   let assert [first, second, third] = codon |> string.split("")
 
   case first {

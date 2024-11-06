@@ -1,6 +1,7 @@
 import actions/codon
 import gleam/list
 import gleam/string
+import tools
 
 pub fn validate_base(base: String) {
   case base {
@@ -9,10 +10,15 @@ pub fn validate_base(base: String) {
   }
 }
 
-pub fn translate(sequence: String) -> Result(List(String), DnaParseError) {
-  let split = sequence |> string.split_once("ATG")
+pub type DnaTranslation {
+  Translation(translation: List(String), trimmed: Int)
+  TranslationError(DnaParseError)
+}
+
+pub fn translate(sequence: String) -> DnaTranslation {
+  let split = sequence |> tools.normalize_sequence() |> string.split_once("ATG")
   case split {
-    Error(_) -> Error(TranslateError("No start codon found"))
+    Error(_) -> TranslationError(NoStartCodon)
     Ok(s) -> {
       let after = s.1 |> string.split("")
       let invalid_bases =
@@ -29,11 +35,12 @@ pub fn translate(sequence: String) -> Result(List(String), DnaParseError) {
         "" -> {
           let res = after |> into_codons(["ATG"])
           case res {
-            Ok(codons) -> Ok(codons)
-            Error(err) -> Error(err)
+            Ok(codons) ->
+              Translation(translation: codons, trimmed: s.0 |> string.length())
+            Error(err) -> TranslationError(err)
           }
         }
-        bases -> Error(InvalidBaseError(bases))
+        bases -> TranslationError(InvalidBaseError(bases))
       }
     }
   }
@@ -43,7 +50,7 @@ pub type DnaParseError {
   UnknownParseError
   InvalidBaseError(base: String)
   InvalidLengthError(length: Int)
-  TranslateError(String)
+  NoStartCodon
 }
 
 fn into_codons(
@@ -67,4 +74,5 @@ pub fn reverse_translate(residues: List(codon.Residue)) -> String {
   residues
   |> list.map(fn(r) { r.residue.codon })
   |> string.join("")
+  |> tools.normalize_sequence()
 }
