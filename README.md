@@ -1,6 +1,8 @@
 # dnalg
 
-DNAlg is a DNA sequence manipulation library written in Gleam.
+DNAlg is a DNA sequence manipulation library. This is my implementation in Gleam.
+
+> For a more portable version of this project, I will rewrite it in Go whenever I choose to learn Go.
 
 ## Plans
 
