@@ -1,0 +1,27 @@
+{
+    "name": "dnalg",
+    "version": "0.1.0",
+    "description": "A DNA manipulation library written in Gleam.",
+    "main": "index.mjs",
+    "bin": {
+        "dnalg": "./index.mjs"
+    },
+    "scripts": {
+        "test": "node index.mjs"
+    },
+    "repository": {
+        "type": "git",
+        "url": "github:VoxelMC/dnalg-gleam"
+    },
+    "keywords": [
+        "DNA",
+        "Bioinformatics",
+        "Translation"
+    ],
+    "author": "Trev Fox",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/VoxelMC/dnalg-gleam/issues"
+    },
+    "homepage": "https://github.com/VoxelMC/dnalg-gleam#readme"
+}

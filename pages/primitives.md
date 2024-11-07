@@ -1,6 +1,6 @@
 # DNAlg Primitives
 
-Within `core/` are the primitives that DNAlg use for all actions.
+Within `core/` are the primitives that DNAlg uses for all actions.
 
 ## Current Primitives
 

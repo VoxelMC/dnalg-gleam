@@ -1,0 +1,65 @@
+name: Publish to npm
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags
+
+jobs:
+  test:  # Adding a test job that runs first
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Erlang and Gleam
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: '26.0'
+          gleam-version: '1.0.0'
+
+      - name: Run tests
+        run: gleam test
+
+  publish:
+    needs: test 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Erlang and Gleam
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: '26.0'
+          gleam-version: '1.0.0'
+          
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: "26.0.2"
+          gleam-version: "1.5.1"
+          rebar3-version: "3"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Build Gleam project
+        run: gleam build --target javascript
+
+      - name: Copy build output to dist
+        run: |
+          rm -rf dist/src
+          cp -r build/dev/javascript/* dist/
+
+      - name: Install dependencies in dist
+        working-directory: ./dist
+        run: npm ci
+
+      - name: Publish to npm
+        working-directory: ./dist
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

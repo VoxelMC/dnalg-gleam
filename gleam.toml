@@ -1,19 +1,31 @@
 name = "dnalg"
-version = "1.0.0"
+version = "0.1.0"
 
 # Fill out these fields if you intend to generate HTML documentation or publish
 # your project to the Hex package manager.
-#
-# description = ""
-# licences = ["Apache-2.0"]
-# repository = { type = "github", user = "", repo = "" }
+
+description = "DNAlg is a DNA manipulation library written in Gleam. At can be used as a library for your own Gleam programs, or a command line program"
+licences = ["MIT"]
+repository = { type = "github", user = "VoxelMC", repo = "dnalg-gleam" }
+target = "javascript"
+
 # links = [{ title = "Website", href = "" }]
-#
-# For a full reference of all the available options, you can have a look at
-# https://gleam.run/writing-gleam/gleam-toml/.
+
+[documentation]
+pages = [
+	{ title = "Primitives", path = "ref/primitives.html", source = "./pages/primitives.md" },
+	{ title = "Roadmap", path = "roadmap.html", source = "./ROADMAP.md" },
+]
 
 [dependencies]
 gleam_stdlib = ">= 0.34.0 and < 2.0.0"
+simplifile = ">= 2.2.0 and < 3.0.0"
+glint = ">= 1.1.0 and < 2.0.0"
+argv = ">= 1.0.2 and < 2.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
+
+[javascript]
+typescript_declarations = true
+runtime = "node"
