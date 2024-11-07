@@ -4,14 +4,14 @@
     "description": "A DNA manipulation library written in Gleam.",
     "main": "index.mjs",
     "bin": {
-        "dnalg": "./index.mjs"
+        "dnalg": "index.mjs"
     },
     "scripts": {
         "test": "node index.mjs"
     },
     "repository": {
         "type": "git",
-        "url": "github:VoxelMC/dnalg-gleam"
+        "url": "git+https://github.com/VoxelMC/dnalg-gleam.git"
     },
     "keywords": [
         "DNA",
