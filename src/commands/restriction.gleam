@@ -108,6 +108,6 @@ pub fn silently_mutate(sequence sequence: String, recognition site: String) {
       translation
       |> mutate(range)
     }
-    dna.TranslationError(_) -> panic
+    dna.TranslationError(_) -> Mutated("", [])
   }
 }

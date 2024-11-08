@@ -10,8 +10,14 @@ pub fn caps_flag() -> Flag(Bool) {
   |> glint.flag_help("Capitalize the hello message")
 }
 
-pub fn slient_mutate() -> Flag(Bool) {
-  glint.bool_flag("slient")
+pub fn restriction() -> Flag(String) {
+  glint.string_flag("restriction")
+  |> glint.flag_default("")
+  |> glint.flag_help("Specify a restriction recognition site.")
+}
+
+pub fn silent_splash() -> Flag(Bool) {
+  glint.bool_flag("n")
   |> glint.flag_default(False)
-  |> glint.flag_help("Sliently mutate the input")
+  |> glint.flag_help("Suppress the splash message.")
 }

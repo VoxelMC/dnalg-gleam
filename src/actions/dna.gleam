@@ -1,15 +1,9 @@
 import core/codon
 import core/residue.{type Residue, Residue, Stop}
+import core/sequence
 import core/tools
 import gleam/list
 import gleam/string
-
-pub fn validate_base(base: String) {
-  case base {
-    "A" | "T" | "C" | "G" -> Ok(base)
-    _ -> Error(base)
-  }
-}
 
 // TODO: Move this to core/sequence and add DnaSequence type
 pub type DnaTranslation {
@@ -29,7 +23,7 @@ pub fn translate(sequence: String) -> DnaTranslation {
         after
         |> list.unique
         |> list.fold("", fn(acc, curr) {
-          case curr |> validate_base {
+          case curr |> sequence.validate_base {
             Ok(_) -> acc
             Error(base) -> acc <> base
           }
