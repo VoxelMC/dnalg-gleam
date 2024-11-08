@@ -1,4 +1,5 @@
 import argv
+import cli/flags.{caps_flag}
 import gleam/io
 import gleam/string
 import glint

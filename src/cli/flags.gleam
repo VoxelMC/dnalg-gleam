@@ -1,4 +1,6 @@
-pub fn caps_flag() -> glint.Flag(Bool) {
+import glint.{type Flag}
+
+pub fn caps_flag() -> Flag(Bool) {
   // create a new boolean flag with key "caps"
   // this flag will be called as --caps=true (or simply --caps as glint handles boolean flags in a bit of a special manner) from the command line
   glint.bool_flag("caps")
