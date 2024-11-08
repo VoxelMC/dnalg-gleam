@@ -1,6 +1,6 @@
 {
     "name": "dnalg",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "A DNA manipulation library written in Gleam.",
     "main": "index.mjs",
     "bin": {
