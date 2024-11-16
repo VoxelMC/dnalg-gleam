@@ -1,5 +1,5 @@
-import core/codon.{Codon}
-import core/residue as r
+import dnalg/core/codon.{Codon}
+import dnalg/core/residue as r
 import gleeunit/should
 
 pub fn alternates_test() {

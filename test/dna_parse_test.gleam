@@ -1,4 +1,4 @@
-import actions/dna
+import dnalg/actions/dna
 import gleeunit/should
 
 pub fn dna_parse_test() {

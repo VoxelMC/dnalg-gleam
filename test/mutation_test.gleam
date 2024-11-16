@@ -1,6 +1,5 @@
-import core/tools
-
-import commands/restriction
+import dnalg/commands/restriction
+import dnalg/core/tools
 
 import gleeunit/should
 
