@@ -1,4 +1,4 @@
-import core/residue.{type Residue}
+import dnalg/core/residue.{type Residue}
 import gleam/list
 
 pub fn isolate_residue(seq_translation: List(Residue), index: Int) {

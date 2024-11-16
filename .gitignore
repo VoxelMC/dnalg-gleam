@@ -6,3 +6,4 @@ erl_crash.dump
 /dist/*
 !/dist/index.mjs
 !/dist/package.json
+!/dist/README.md

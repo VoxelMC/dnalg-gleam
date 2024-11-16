@@ -1,4 +1,4 @@
-import core/tools
+import dnalg/core/tools
 import gleam/io
 import gleam/list
 import gleam/string

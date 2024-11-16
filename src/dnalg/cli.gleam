@@ -1,27 +1,29 @@
 import gleam/io
 import gleam_community/ansi
 
-import commands/restriction
-import ffi/stdin
 import glint
 
-import cli/flags
-import core/sequence as s
-import core/tools
+import dnalg/cli/flags
+import dnalg/commands/restriction
+import dnalg/core/sequence as s
+import dnalg/core/tools
+import dnalg/ffi/stdin
+
+pub fn get_splash() -> String {
+  ansi.pink("󰚄 dnalg ") <> ansi.pink("") <> " the DNA manipulation tool"
+}
 
 pub fn splash(silent: Bool) {
   case silent {
     False -> {
-      io.println(
-        ansi.yellow("dnalg ") <> ansi.pink("") <> " DNA manipulation tool",
-      )
+      get_splash() |> io.println
     }
     True -> Nil
   }
 }
 
 pub fn cmd_silent_mutate() -> glint.Command(Nil) {
-  use <- glint.command_help("Sliently mutate the input")
+  use <- glint.command_help("Mutate DNA to dodge a restriction site.")
   use res_site <- glint.flag(flags.restriction())
   use _, args, flags <- glint.command()
 

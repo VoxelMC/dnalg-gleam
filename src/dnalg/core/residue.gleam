@@ -1,5 +1,5 @@
-import core/codon.{type Codon, Codon}
-import core/tools
+import dnalg/core/codon.{type Codon, Codon}
+import dnalg/core/tools
 import gleam/string
 
 pub type AminoAcid {

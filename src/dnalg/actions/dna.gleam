@@ -1,9 +1,10 @@
-import core/codon
-import core/residue.{type Residue, Residue, Stop}
-import core/sequence
-import core/tools
 import gleam/list
 import gleam/string
+
+import dnalg/core/codon
+import dnalg/core/residue.{type Residue, Residue, Stop}
+import dnalg/core/sequence
+import dnalg/core/tools
 
 // TODO: Move this to core/sequence and add DnaSequence type
 pub type DnaTranslation {

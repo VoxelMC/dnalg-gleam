@@ -1,9 +1,9 @@
-import actions/dna
-import actions/translation
+import dnalg/actions/dna
+import dnalg/actions/translation
 
-import core/codon.{Codon}
-import core/residue.{type Residue}
-import core/tools
+import dnalg/core/codon.{Codon}
+import dnalg/core/residue.{type Residue}
+import dnalg/core/tools
 
 import gleam/io
 import gleam/list
