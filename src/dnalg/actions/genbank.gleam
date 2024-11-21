@@ -13,7 +13,9 @@ pub type GenbankParseError {
 
 /// This function takes a string which represents the contents of a `.gb` file.
 /// Always returns a `GenBank` type
-/// TODO:
+///
+// TODO: asd
+
 pub fn parse(_input: String) -> File {
   file.gb_empty
 }
@@ -61,7 +63,7 @@ pub fn parse_sequence(input: String) {
       }
       Ok(bits |> result.unwrap(sequence.empty))
     }
-    _, _ ->
+    _ ->
       Error(InvalidFormat("GenBank input does not contain an 'ORIGIN' section."))
   }
 }
