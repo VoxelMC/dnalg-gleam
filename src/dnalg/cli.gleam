@@ -1,5 +1,7 @@
+import dnalg/core/codon
 import gleam/int
 import gleam/io
+import gleam/string
 import gleam_community/ansi
 import glint
 
@@ -38,28 +40,43 @@ pub fn cmd_silent_mutate() -> glint.Command(Nil) {
     "", _ -> "No restriction site sequence provided." |> tools.as_error
     site, Ok(sequence) -> {
       // TODO: This will have to support validating `.FASTA` or `.GB` later.
-      let is_valid = sequence |> s.validate_sequence
-      case is_valid {
-        "" -> {
-          case restriction.silently_mutate(sequence, site) {
-            restriction.Mutated(new_seq, _) -> {
-              new_seq
-            }
-            _ -> {
-              {
-                "An error occurred while trying to mutate the sequence."
-                <> "\n "
-                <> " A restriction site may not be present"
-              }
-              |> tools.as_error
-            }
-          }
+      // let is_valid = sequence |> s.validate_sequence
+      // case is_valid {
+      //   "" -> {
+      case restriction.silently_mutate(sequence, site) {
+        restriction.Mutated(new_seq, _) -> {
+          new_seq
         }
-        _ -> {
-          "You have provided an invalid DNA sequence. Please review your input."
+        restriction.CannotCompleteMutation(msg) -> {
+          {
+            "An error occurred while trying to mutate the sequence."
+            <> "\n "
+            <> " Reason: "
+            <> msg
+          }
           |> tools.as_error
         }
       }
+    }
+  }
+  |> io.println
+}
+
+pub fn cmd_codon_alts() {
+  use <- glint.command_help("Count number of restriction sites in a sequence.")
+  use _, args, flags <- glint.command()
+
+  let assert Ok(silent_splash) = glint.get_flag(flags, flags.silent_splash())
+  splash(silent_splash)
+
+  let in = input.get(args)
+  case in {
+    Ok(seq) -> {
+      let alts = codon.alternates(codon.Codon(seq), [])
+      alts |> string.join(", ")
+    }
+    Error(_) -> {
+      "No input provided." |> tools.as_error
     }
   }
   |> io.println

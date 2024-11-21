@@ -52,6 +52,7 @@ pub fn run(args: List(String)) {
   |> glint.add(at: [], do: default())
   |> glint.add(at: ["clean"], do: cli.cmd_silent_mutate())
   |> glint.add(at: ["sites"], do: cli.cmd_count_sites())
+  |> glint.add(at: ["calts"], do: cli.cmd_codon_alts())
   |> glint.group_flag([], flags.silent_splash())
   |> glint.group_flag([], flags.output())
   |> glint.run(case args |> list.length {

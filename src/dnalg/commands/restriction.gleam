@@ -1,5 +1,6 @@
 import dnalg/actions/dna
 import dnalg/actions/translation
+import gleam/int
 
 import dnalg/core/codon.{Codon}
 import dnalg/core/index
@@ -30,7 +31,7 @@ pub type ResidueRange {
 
 pub type MutationResult {
   Mutated(new_sequence: String, new_residues: List(Residue))
-  CannotCompleteMutation
+  CannotCompleteMutation(msg: String)
 }
 
 // TODO: Can we put translation type here instead of List(Residue)?
@@ -56,7 +57,10 @@ fn mutate(seq_translation: List(Residue), i: index.TranslationRange) {
         }
       }
     }
-    Ok(_), False -> CannotCompleteMutation
+    Ok(_), False ->
+      CannotCompleteMutation(
+        "No alternate codons are available. Consider mutation instead.",
+      )
     Error(_), True | Error(_), False ->
       panic as "Invalid DNA Sequence. Please review your input."
     // Should have been validated by now.
@@ -86,7 +90,7 @@ fn mutate_tail(
   sequence sequence: sequence.DnaTranscription,
   recognition site: String,
   sites_left sites_left: Int,
-) {
+) -> MutationResult {
   let recog_start = case
     sequence |> sequence.raw_transcript() |> string.split_once(on: site)
   {
@@ -117,14 +121,36 @@ fn mutate_tail(
         sites_left,
       )
     }
-    TranscriptionError(_) -> #(Mutated("", []), 0)
+    TranscriptionError(err) ->
+      case err {
+        sequence.NoStartCodon -> #(CannotCompleteMutation("No start codon."), 1)
+        sequence.InvalidLengthError(len) -> #(
+          CannotCompleteMutation(
+            "Invalid length. Extra bases = " <> len |> int.to_string(),
+          ),
+          1,
+        )
+        sequence.InvalidBaseError(base) -> #(
+          CannotCompleteMutation("Invalid bases provided (" <> base <> ")"),
+          1,
+        )
+        sequence.UnknownParseError -> #(
+          CannotCompleteMutation("Sorry, I cannot help you... Good luck!"),
+          1,
+        )
+        // _ -> #(Mutated("something went wrong.", []), 1)
+      }
   }
 
   case mutated {
-    #(mut, 1) -> mut
-    #(Mutated(mut, _), left) ->
-      mutate_tail(mut |> dna.transcribe(), site, left - 1)
-    #(CannotCompleteMutation, _) -> CannotCompleteMutation
+    #(Mutated(mut, n), 1) -> {
+      Mutated(mut, n)
+    }
+    #(Mutated(mut, _), left) -> {
+      let mut = mut |> dna.transcribe()
+      mutate_tail(mut, site, left - 1)
+    }
+    #(CannotCompleteMutation(msg), _) -> CannotCompleteMutation(msg)
   }
 }
 

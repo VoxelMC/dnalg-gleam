@@ -11,7 +11,7 @@ pub fn caps_flag() -> Flag(Bool) {
 }
 
 pub fn restriction() -> Flag(String) {
-  glint.string_flag("restriction")
+  glint.string_flag("rsite")
   |> glint.flag_default("")
   |> glint.flag_help("Specify a restriction recognition site.")
 }
