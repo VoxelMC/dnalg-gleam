@@ -11,6 +11,10 @@ import dnalg/core/tools
 
 // NOTE: Future signature: 
 // pub fn transcribe(sequence: DnaSequence) -> DnaTranscription
+// Review the name here as well. This is not really a transcription nor
+// translation. Maybe just rename to reading_frame() or orf() ????
+/// Retrieve the first reading frame from a DNA Sequence. Requires a start and
+/// stop codon to succeed.
 pub fn transcribe(sequence: String) -> DnaTranscription {
   let split = sequence |> tools.normalize_sequence() |> string.split_once("ATG")
   case split {
@@ -59,6 +63,7 @@ fn into_codons(
   }
 }
 
+/// Transform a list of residues into a DNA Sequence.
 pub fn reverse_translate(residues: List(Residue)) -> String {
   residues
   |> list.map(fn(r) { r.codon })

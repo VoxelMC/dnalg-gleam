@@ -10,4 +10,6 @@ pub fn stop(start_time: Int) -> Int {
 }
 
 @external(javascript, "../../perf_ffi.mjs", "split_test")
-pub fn split_test(input: String) -> String
+pub fn split_test(input: String) -> String {
+  input
+}

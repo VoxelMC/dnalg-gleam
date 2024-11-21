@@ -15,6 +15,7 @@ pub fn get_splash() -> String {
   ansi.pink("󰚄 dnalg ") <> ansi.pink("") <> " the DNA manipulation tool"
 }
 
+@internal
 pub fn splash(silent: Bool) {
   case silent {
     False -> {
@@ -24,6 +25,7 @@ pub fn splash(silent: Bool) {
   }
 }
 
+@internal
 pub fn cmd_silent_mutate() -> glint.Command(Nil) {
   use <- glint.command_help("Mutate DNA to dodge a restriction site.")
   use res_site <- glint.flag(flags.restriction())
@@ -62,6 +64,7 @@ pub fn cmd_silent_mutate() -> glint.Command(Nil) {
   |> io.println
 }
 
+@internal
 pub fn cmd_codon_alts() {
   use <- glint.command_help("Count number of restriction sites in a sequence.")
   use _, args, flags <- glint.command()
@@ -82,6 +85,7 @@ pub fn cmd_codon_alts() {
   |> io.println
 }
 
+@internal
 pub fn cmd_count_sites() {
   use <- glint.command_help("Count number of restriction sites in a sequence.")
   use res_site <- glint.flag(flags.restriction())

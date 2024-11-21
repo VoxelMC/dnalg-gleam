@@ -8,6 +8,7 @@ pub type FastaParseError {
   InvalidFormat(msg: String)
 }
 
+/// Parses the first entry of a FASTA formatted string/file.
 pub fn parse_head(input: String) -> Result(List(File), FastaParseError) {
   case input |> string.split_once("\n") {
     Ok(#(first, s)) -> {
@@ -22,6 +23,7 @@ pub fn parse_head(input: String) -> Result(List(File), FastaParseError) {
   }
 }
 
+/// Parses all entries of a FASTA formatted string/file.
 pub fn parse(input: String) -> Result(List(File), FastaParseError) {
   case input |> string.split_once(">") {
     Ok(#(_, in)) -> tail_parse(in, [])

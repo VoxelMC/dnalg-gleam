@@ -6,7 +6,12 @@ pub type Codon {
   Codon(str: String)
 }
 
-pub fn alternates(codon codon: Codon, exclude exclude: List(String)) {
+/// Get alternate codons as a list from a given codon. Sorted by
+/// `string.compare`.
+pub fn alternates(
+  codon codon: Codon,
+  exclude exclude: List(String),
+) -> List(String) {
   let codon = codon.str |> tools.normalize_sequence()
   let exclude = exclude |> list.map(fn(s) { s |> tools.normalize_sequence() })
 

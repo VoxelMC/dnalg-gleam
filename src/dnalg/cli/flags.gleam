@@ -1,5 +1,6 @@
 import glint.{type Flag}
 
+@internal
 pub fn caps_flag() -> Flag(Bool) {
   // create a new boolean flag with key "caps"
   // this flag will be called as --caps=true (or simply --caps as glint handles boolean flags in a bit of a special manner) from the command line
@@ -10,18 +11,21 @@ pub fn caps_flag() -> Flag(Bool) {
   |> glint.flag_help("Capitalize the hello message")
 }
 
+@internal
 pub fn restriction() -> Flag(String) {
   glint.string_flag("rsite")
   |> glint.flag_default("")
   |> glint.flag_help("Specify a restriction recognition site.")
 }
 
+@internal
 pub fn silent_splash() -> Flag(Bool) {
   glint.bool_flag("n")
   |> glint.flag_default(False)
   |> glint.flag_help("Suppress the splash message.")
 }
 
+@internal
 pub fn output() -> Flag(String) {
   glint.string_flag("out")
   |> glint.flag_default("")

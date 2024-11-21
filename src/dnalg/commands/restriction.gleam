@@ -34,39 +34,8 @@ pub type MutationResult {
   CannotCompleteMutation(msg: String)
 }
 
-// TODO: Can we put translation type here instead of List(Residue)?
-fn mutate(seq_translation: List(Residue), i: index.TranslationRange) {
-  let #(b, m, a) = seq_translation |> translation.isolate_residue(i.start)
-  let is_within_range = i.start <= i.end
-  case m |> list.first, is_within_range {
-    Ok(first), True -> {
-      case first.alternates {
-        [] ->
-          mutate(seq_translation, index.TranslationRange(i.start + 1, i.end))
-        codons -> {
-          // Breathe... this is okay :)
-          let assert Ok(new_codon) = codons |> list.shuffle() |> list.first()
-
-          let new_translation =
-            b
-            |> list.append([residue.from_codon(Codon(new_codon))])
-            |> list.append(a)
-
-          let new_sequence = new_translation |> dna.reverse_translate()
-          Mutated(new_sequence:, new_residues: new_translation)
-        }
-      }
-    }
-    Ok(_), False ->
-      CannotCompleteMutation(
-        "No alternate codons are available. Consider mutation instead.",
-      )
-    Error(_), True | Error(_), False ->
-      panic as "Invalid DNA Sequence. Please review your input."
-    // Should have been validated by now.
-  }
-}
-
+/// Perform a silent mutation on the provided `sequence` to eliminate `recognition`
+/// sites.
 pub fn silently_mutate(sequence sequence: String, recognition site: String) {
   // This function needs to find which codons are affected by the cut site.
   // This is just an index for start and end.
@@ -81,8 +50,12 @@ pub fn silently_mutate(sequence sequence: String, recognition site: String) {
   // Then, excise the first residue which can be silently mutated, and mutate
   // it!
   let sequence = sequence |> tools.normalize_sequence()
-  let sites_left = count_sites(sequence:, recognition: site)
   let sequence = sequence |> dna.transcribe()
+  let sites_left =
+    count_sites(
+      sequence: sequence |> sequence.raw_transcript(),
+      recognition: site,
+    )
   mutate_tail(sequence:, recognition: site, sites_left:)
 }
 
@@ -154,6 +127,40 @@ fn mutate_tail(
   }
 }
 
+// TODO: Can we put translation type here instead of List(Residue)?
+fn mutate(seq_translation: List(Residue), i: index.TranslationRange) {
+  let #(b, m, a) = seq_translation |> translation.isolate_residue(i.start)
+  let is_within_range = i.start <= i.end
+  case m |> list.first, is_within_range {
+    Ok(first), True -> {
+      case first.alternates {
+        [] ->
+          mutate(seq_translation, index.TranslationRange(i.start + 1, i.end))
+        codons -> {
+          // Breathe... this is okay :)
+          let assert Ok(new_codon) = codons |> list.shuffle() |> list.first()
+
+          let new_translation =
+            b
+            |> list.append([residue.from_codon(Codon(new_codon))])
+            |> list.append(a)
+
+          let new_sequence = new_translation |> dna.reverse_translate()
+          Mutated(new_sequence:, new_residues: new_translation)
+        }
+      }
+    }
+    Ok(_), False ->
+      CannotCompleteMutation(
+        "No alternate codons are available. Consider mutation instead.",
+      )
+    Error(_), True | Error(_), False ->
+      panic as "Invalid DNA Sequence. Please review your input."
+    // Should have been validated by now.
+  }
+}
+
+/// Count the number of occurrences of a recognition site in a sequence.
 pub fn count_sites(sequence sequence: String, recognition site: String) -> Int {
   { sequence |> string.split(site) |> list.length() } - 1
 }
