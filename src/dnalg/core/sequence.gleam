@@ -3,6 +3,33 @@ import gleam/io
 import gleam/list
 import gleam/string
 
+// TODO: Move this to core/sequence and add DnaSequence type
+pub type DnaTranscription {
+  Transcription(translation: List(String), trimmed: Int)
+  TranscriptionError(DnaParseError)
+}
+
+pub type DnaParseError {
+  UnknownParseError
+  InvalidBaseError(base: String)
+  InvalidLengthError(length: Int)
+  NoStartCodon
+}
+
+pub opaque type DnaSequence {
+  DnaSequence(sequence: String)
+}
+
+pub fn new(sequence: String) {
+  DnaSequence(sequence |> tools.normalize_sequence())
+}
+
+pub const empty = DnaSequence("")
+
+pub fn raw(dna_seq: DnaSequence) {
+  dna_seq.sequence
+}
+
 pub fn validate_base(base: String) {
   case base {
     "A" | "T" | "C" | "G" -> Ok(base)

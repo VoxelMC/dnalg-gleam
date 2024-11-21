@@ -1,3 +1,4 @@
+import dnalg/cli/input
 import gleam/io
 import gleam_community/ansi
 
@@ -7,7 +8,6 @@ import dnalg/cli/flags
 import dnalg/commands/restriction
 import dnalg/core/sequence as s
 import dnalg/core/tools
-import dnalg/ffi/stdin
 
 pub fn get_splash() -> String {
   ansi.pink("󰚄 dnalg ") <> ansi.pink("") <> " the DNA manipulation tool"
@@ -31,17 +31,7 @@ pub fn cmd_silent_mutate() -> glint.Command(Nil) {
   let assert Ok(silent_splash) = glint.get_flag(flags, flags.silent_splash())
   splash(silent_splash)
 
-  // Try to get the sequence
-  let sequence = case args {
-    [] ->
-      case stdin.read() {
-        "" -> {
-          Error(Nil)
-        }
-        input -> Ok(input)
-      }
-    [seq, ..] -> Ok(seq)
-  }
+  let sequence = input.get(args)
 
   case site, sequence {
     _, Error(_) -> "No DNA sequence provided" |> tools.as_error

@@ -1,5 +1,6 @@
 import argv
 import gleam/io
+import gleam/list
 import gleam_community/ansi
 import glint
 
@@ -22,6 +23,13 @@ fn default() {
 }
 
 pub fn main() {
+  run([])
+}
+
+/// Entrypoint which can be used when running DNAlg programmatically. 
+/// When called with an empty array (`[]`), will fall-back to
+/// `argv.load().arguments`.
+pub fn run(args: List(String)) {
   let help_msg =
     cli.get_splash()
     <> "\n"
@@ -42,7 +50,11 @@ pub fn main() {
   |> glint.pretty_help(glint.default_pretty_help())
   |> glint.global_help(help_msg)
   |> glint.add(at: [], do: default())
-  |> glint.add(at: ["silent-mutate"], do: cmd_silent_mutate())
+  |> glint.add(at: ["clean"], do: cmd_silent_mutate())
   |> glint.group_flag([], flags.silent_splash())
-  |> glint.run(argv.load().arguments)
+  |> glint.group_flag([], flags.output())
+  |> glint.run(case args |> list.length {
+    0 -> argv.load().arguments
+    _ -> args
+  })
 }

@@ -2,7 +2,10 @@ import gleam/string.{replace, uppercase}
 import gleam_community/ansi
 
 pub fn normalize_sequence(sequence: String) -> String {
-  sequence |> replace(each: " ", with: "") |> uppercase()
+  sequence
+  |> replace(each: " ", with: "")
+  |> uppercase()
+  |> replace(each: "\n", with: "")
 }
 
 pub fn as_error(msg: String) -> String {

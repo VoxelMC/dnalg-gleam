@@ -3,21 +3,18 @@ import gleam/string
 
 import dnalg/core/codon
 import dnalg/core/residue.{type Residue, Residue, Stop}
-import dnalg/core/sequence
+import dnalg/core/sequence.{
+  type DnaParseError, type DnaTranscription, InvalidBaseError,
+  InvalidLengthError, NoStartCodon, Transcription, TranscriptionError,
+}
 import dnalg/core/tools
 
-// TODO: Move this to core/sequence and add DnaSequence type
-pub type DnaTranslation {
-  Translation(translation: List(String), trimmed: Int)
-  TranslationError(DnaParseError)
-}
-
 // NOTE: Future signature: 
-// pub fn translate(sequence: DnaSequence) -> DnaTranslation
-pub fn translate(sequence: String) -> DnaTranslation {
+// pub fn translate(sequence: DnaSequence) -> DnaTranscription
+pub fn translate(sequence: String) -> DnaTranscription {
   let split = sequence |> tools.normalize_sequence() |> string.split_once("ATG")
   case split {
-    Error(_) -> TranslationError(NoStartCodon)
+    Error(_) -> TranscriptionError(NoStartCodon)
     Ok(s) -> {
       let after = s.1 |> string.split("")
       let invalid_bases =
@@ -35,21 +32,17 @@ pub fn translate(sequence: String) -> DnaTranslation {
           let res = after |> into_codons(["ATG"])
           case res {
             Ok(codons) ->
-              Translation(translation: codons, trimmed: s.0 |> string.length())
-            Error(err) -> TranslationError(err)
+              Transcription(
+                translation: codons,
+                trimmed: s.0 |> string.length(),
+              )
+            Error(err) -> TranscriptionError(err)
           }
         }
-        bases -> TranslationError(InvalidBaseError(bases))
+        bases -> TranscriptionError(InvalidBaseError(bases))
       }
     }
   }
-}
-
-pub type DnaParseError {
-  UnknownParseError
-  InvalidBaseError(base: String)
-  InvalidLengthError(length: Int)
-  NoStartCodon
 }
 
 fn into_codons(

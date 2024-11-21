@@ -21,3 +21,9 @@ pub fn silent_splash() -> Flag(Bool) {
   |> glint.flag_default(False)
   |> glint.flag_help("Suppress the splash message.")
 }
+
+pub fn output() -> Flag(String) {
+  glint.string_flag("out")
+  |> glint.flag_default("")
+  |> glint.flag_help("Specify output path")
+}

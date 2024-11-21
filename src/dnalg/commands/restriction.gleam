@@ -3,6 +3,7 @@ import dnalg/actions/translation
 
 import dnalg/core/codon.{Codon}
 import dnalg/core/residue.{type Residue}
+import dnalg/core/sequence.{Transcription, TranscriptionError}
 import dnalg/core/tools
 
 import gleam/io
@@ -94,7 +95,7 @@ pub fn silently_mutate(sequence sequence: String, recognition site: String) {
   let seq = sequence |> dna.translate()
 
   case seq {
-    dna.Translation(codons, trimmed) -> {
+    Transcription(codons, trimmed) -> {
       let translation =
         codons
         |> list.map(fn(c) { Codon(c) |> residue.from_codon() })
@@ -108,6 +109,6 @@ pub fn silently_mutate(sequence sequence: String, recognition site: String) {
       translation
       |> mutate(range)
     }
-    dna.TranslationError(_) -> Mutated("", [])
+    TranscriptionError(_) -> Mutated("", [])
   }
 }
