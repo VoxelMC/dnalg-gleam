@@ -1,10 +1,10 @@
-import dnalg/cli/input
+import gleam/int
 import gleam/io
 import gleam_community/ansi
-
 import glint
 
 import dnalg/cli/flags
+import dnalg/cli/input
 import dnalg/commands/restriction
 import dnalg/core/sequence as s
 import dnalg/core/tools
@@ -54,6 +54,36 @@ pub fn cmd_silent_mutate() -> glint.Command(Nil) {
               |> tools.as_error
             }
           }
+        }
+        _ -> {
+          "You have provided an invalid DNA sequence. Please review your input."
+          |> tools.as_error
+        }
+      }
+    }
+  }
+  |> io.println
+}
+
+pub fn cmd_count_sites() {
+  use <- glint.command_help("Count number of restriction sites in a sequence.")
+  use res_site <- glint.flag(flags.restriction())
+  use _, args, flags <- glint.command()
+
+  let assert Ok(site) = res_site(flags)
+  let assert Ok(silent_splash) = glint.get_flag(flags, flags.silent_splash())
+  splash(silent_splash)
+
+  let sequence = input.get(args)
+  case site, sequence {
+    _, Error(_) -> "No DNA sequence provided" |> tools.as_error
+    "", _ -> "No restriction site sequence provided." |> tools.as_error
+    recognition, Ok(sequence) -> {
+      let is_valid = sequence |> s.validate_sequence
+      case is_valid {
+        "" -> {
+          let count = restriction.count_sites(sequence:, recognition:)
+          count |> int.to_string()
         }
         _ -> {
           "You have provided an invalid DNA sequence. Please review your input."

@@ -5,7 +5,7 @@ import gleam/string
 
 // TODO: Move this to core/sequence and add DnaSequence type
 pub type DnaTranscription {
-  Transcription(translation: List(String), trimmed: Int)
+  Transcription(transcript: List(String), trimmed: Int)
   TranscriptionError(DnaParseError)
 }
 
@@ -28,6 +28,13 @@ pub const empty = DnaSequence("")
 
 pub fn raw(dna_seq: DnaSequence) {
   dna_seq.sequence
+}
+
+pub fn raw_transcript(transcript: DnaTranscription) {
+  case transcript {
+    Transcription(t, _) -> t |> string.join("")
+    TranscriptionError(_) -> ""
+  }
 }
 
 pub fn validate_base(base: String) {

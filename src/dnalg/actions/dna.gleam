@@ -10,8 +10,8 @@ import dnalg/core/sequence.{
 import dnalg/core/tools
 
 // NOTE: Future signature: 
-// pub fn translate(sequence: DnaSequence) -> DnaTranscription
-pub fn translate(sequence: String) -> DnaTranscription {
+// pub fn transcribe(sequence: DnaSequence) -> DnaTranscription
+pub fn transcribe(sequence: String) -> DnaTranscription {
   let split = sequence |> tools.normalize_sequence() |> string.split_once("ATG")
   case split {
     Error(_) -> TranscriptionError(NoStartCodon)
@@ -32,10 +32,7 @@ pub fn translate(sequence: String) -> DnaTranscription {
           let res = after |> into_codons(["ATG"])
           case res {
             Ok(codons) ->
-              Transcription(
-                translation: codons,
-                trimmed: s.0 |> string.length(),
-              )
+              Transcription(transcript: codons, trimmed: s.0 |> string.length())
             Error(err) -> TranscriptionError(err)
           }
         }

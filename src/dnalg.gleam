@@ -4,7 +4,7 @@ import gleam/list
 import gleam_community/ansi
 import glint
 
-import dnalg/cli.{cmd_silent_mutate}
+import dnalg/cli
 import dnalg/cli/flags
 import dnalg/core/tools
 
@@ -50,7 +50,8 @@ pub fn run(args: List(String)) {
   |> glint.pretty_help(glint.default_pretty_help())
   |> glint.global_help(help_msg)
   |> glint.add(at: [], do: default())
-  |> glint.add(at: ["clean"], do: cmd_silent_mutate())
+  |> glint.add(at: ["clean"], do: cli.cmd_silent_mutate())
+  |> glint.add(at: ["sites"], do: cli.cmd_count_sites())
   |> glint.group_flag([], flags.silent_splash())
   |> glint.group_flag([], flags.output())
   |> glint.run(case args |> list.length {

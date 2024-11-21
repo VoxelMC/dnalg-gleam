@@ -2,6 +2,7 @@ import dnalg/actions/dna
 import dnalg/actions/translation
 
 import dnalg/core/codon.{Codon}
+import dnalg/core/index
 import dnalg/core/residue.{type Residue}
 import dnalg/core/sequence.{Transcription, TranscriptionError}
 import dnalg/core/tools
@@ -32,13 +33,15 @@ pub type MutationResult {
   CannotCompleteMutation
 }
 
-fn mutate(seq_translation: List(Residue), i: ResidueRange) {
+// TODO: Can we put translation type here instead of List(Residue)?
+fn mutate(seq_translation: List(Residue), i: index.TranslationRange) {
   let #(b, m, a) = seq_translation |> translation.isolate_residue(i.start)
   let is_within_range = i.start <= i.end
   case m |> list.first, is_within_range {
     Ok(first), True -> {
       case first.alternates {
-        [] -> mutate(seq_translation, ResidueRange(i.start + 1, i.end))
+        [] ->
+          mutate(seq_translation, index.TranslationRange(i.start + 1, i.end))
         codons -> {
           // Breathe... this is okay :)
           let assert Ok(new_codon) = codons |> list.shuffle() |> list.first()
@@ -74,41 +77,57 @@ pub fn silently_mutate(sequence sequence: String, recognition site: String) {
   // Then, excise the first residue which can be silently mutated, and mutate
   // it!
   let sequence = sequence |> tools.normalize_sequence()
+  let sites_left = count_sites(sequence:, recognition: site)
+  let sequence = sequence |> dna.transcribe()
+  mutate_tail(sequence:, recognition: site, sites_left:)
+}
 
-  let recog_start = case sequence |> string.split_once(on: site) {
+fn mutate_tail(
+  sequence sequence: sequence.DnaTranscription,
+  recognition site: String,
+  sites_left sites_left: Int,
+) {
+  let recog_start = case
+    sequence |> sequence.raw_transcript() |> string.split_once(on: site)
+  {
     Ok(#(before, _)) -> {
       before |> string.length
     }
     Error(_) -> 0
   }
 
+  // TODO: Check the number of restriction sites and act that number of times
+  // upon the sequence
+
   let recog_len = site |> string.length
   let recog_end = recog_start + recog_len - 1
 
-  // Probably don't change this.
-  let base_to_res_index = fn(x) {
-    let b = x % 3
-    let c = x - b
-    { c + 1 } / 3
-  }
-
-  let seq = sequence |> dna.translate()
-
-  case seq {
-    Transcription(codons, trimmed) -> {
+  let mutated = case sequence {
+    Transcription(codons, _) -> {
       let translation =
         codons
         |> list.map(fn(c) { Codon(c) |> residue.from_codon() })
 
-      let range =
-        ResidueRange(
-          base_to_res_index(recog_start - trimmed),
-          base_to_res_index(recog_end - trimmed),
-        )
+      let range = index.SequenceRange(recog_start, recog_end)
+      let range = range |> index.into_trans_range()
 
-      translation
-      |> mutate(range)
+      #(
+        translation
+          |> mutate(range),
+        sites_left,
+      )
     }
-    TranscriptionError(_) -> Mutated("", [])
+    TranscriptionError(_) -> #(Mutated("", []), 0)
   }
+
+  case mutated {
+    #(mut, 1) -> mut
+    #(Mutated(mut, _), left) ->
+      mutate_tail(mut |> dna.transcribe(), site, left - 1)
+    #(CannotCompleteMutation, _) -> CannotCompleteMutation
+  }
+}
+
+pub fn count_sites(sequence sequence: String, recognition site: String) -> Int {
+  { sequence |> string.split(site) |> list.length() } - 1
 }
