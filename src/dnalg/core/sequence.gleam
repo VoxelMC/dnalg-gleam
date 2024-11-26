@@ -3,8 +3,7 @@ import gleam/io
 import gleam/list
 import gleam/string
 
-// TODO: Move this to core/sequence and add DnaSequence type
-pub type DnaTranscription {
+pub type DnaTranscriptionResult {
   Transcription(transcript: List(String), trimmed: Int)
   TranscriptionError(DnaParseError)
 }
@@ -43,7 +42,7 @@ pub fn raw(dna_seq: DnaSequence) {
 }
 
 /// Gets the raw DNA transcription from a constructed `DnaTranscription`.
-pub fn raw_transcript(transcript: DnaTranscription) {
+pub fn raw_transcript(transcript: DnaTranscriptionResult) {
   case transcript {
     Transcription(t, _) -> t |> string.join("")
     TranscriptionError(_) -> ""
@@ -51,7 +50,7 @@ pub fn raw_transcript(transcript: DnaTranscription) {
 }
 
 /// Validate a single base. For a predicate, use `validate_base_p(String)`
-pub fn validate_base(base: String) {
+pub fn validate_base(base: String) -> Result(String, String) {
   case base {
     "A" | "T" | "C" | "G" -> Ok(base)
     _ -> Error(base)
@@ -60,7 +59,7 @@ pub fn validate_base(base: String) {
 
 /// Validate a single base. Serves as a predicate for a fold `fn` such as
 /// `list.any()`. If you need the base returned, use `validate_base(String)`
-pub fn validate_base_p(base: String) {
+pub fn validate_base_p(base: String) -> Bool {
   case base {
     "A" | "T" | "C" | "G" -> True
     _ -> False
@@ -71,7 +70,7 @@ pub fn validate_base_p(base: String) {
 /// If the sequence is valid, it will return an empty string.
 /// You can use this to validate a DNA sequence by matching on the empty
 /// string.
-pub fn validate_sequence(sequence: String) {
+pub fn validate_sequence(sequence: String) -> String {
   sequence
   |> tools.normalize_sequence
   |> string.split("")
@@ -81,6 +80,27 @@ pub fn validate_sequence(sequence: String) {
       Error(base) -> acc <> base
     }
   })
+}
+
+/// Returns the reverse complement of a DNA sequence in 5' -> 3'. Strips all
+/// unknown bases other than "N". Try to handle invalid sequences before using
+/// this function.
+pub fn reverse_complement(sequence: DnaSequence) -> DnaSequence {
+  let reverse = sequence.sequence |> string.to_graphemes() |> list.reverse()
+  let complement =
+    reverse
+    |> list.map(fn(base) {
+      case base {
+        "A" -> "T"
+        "T" -> "A"
+        "G" -> "C"
+        "C" -> "G"
+        "N" -> "N"
+        _ -> ""
+      }
+    })
+
+  new(complement |> string.join(""))
 }
 
 pub fn main() {

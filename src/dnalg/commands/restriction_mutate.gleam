@@ -60,7 +60,7 @@ pub fn silently_mutate(sequence sequence: String, recognition site: String) {
 }
 
 fn mutate_tail(
-  sequence sequence: sequence.DnaTranscription,
+  sequence sequence: sequence.DnaTranscriptionResult,
   recognition site: String,
   sites_left sites_left: Int,
 ) -> MutationResult {

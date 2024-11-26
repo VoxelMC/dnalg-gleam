@@ -51,8 +51,20 @@ pub fn run(args: List(String)) {
   |> glint.global_help(help_msg)
   |> glint.add(at: [], do: default())
   |> glint.add(at: ["clean"], do: cli.cmd_silent_mutate())
-  |> glint.add(at: ["sites"], do: cli.cmd_count_sites())
-  |> glint.add(at: ["calts"], do: cli.cmd_codon_alts())
+  |> glint.add(at: ["count", "rsites"], do: cli.cmd_count_sites())
+  // Count number of restriction sites
+  |> glint.add(at: ["count", "bases"], do: default())
+  // Count number of bases in a sequence 
+  |> glint.add(at: ["count", "frames"], do: default())
+  // Count number of open reading frames
+  |> glint.add(at: ["list", "calts"], do: cli.cmd_codon_alts())
+  |> glint.add(at: ["list", "info"], do: default())
+  // Show info for a genbank or fasta file.
+  |> glint.add(at: ["list", "stats"], do: default())
+  // Show stats for a certain sequence (GC%, length, melting temperature)
+  // Can be filtered upon using a flag.
+  |> glint.add(at: ["parse", "rsite"], do: cli.cmd_parse_r_site())
+  |> glint.add(at: ["parse", "rpreset"], do: cli.cmd_parse_r_preset())
   |> glint.group_flag([], flags.silent_splash())
   |> glint.group_flag([], flags.output())
   |> glint.run(case args |> list.length {

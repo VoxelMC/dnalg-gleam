@@ -4,7 +4,7 @@ import gleam/string
 import dnalg/core/codon
 import dnalg/core/residue.{type Residue, Residue, Stop}
 import dnalg/core/sequence.{
-  type DnaParseError, type DnaTranscription, InvalidBaseError,
+  type DnaParseError, type DnaTranscriptionResult, InvalidBaseError,
   InvalidLengthError, NoStartCodon, Transcription, TranscriptionError,
 }
 import dnalg/core/tools
@@ -15,7 +15,7 @@ import dnalg/core/tools
 // translation. Maybe just rename to reading_frame() or orf() ????
 /// Retrieve the first reading frame from a DNA Sequence. Requires a start and
 /// stop codon to succeed.
-pub fn transcribe(sequence: String) -> DnaTranscription {
+pub fn transcribe(sequence: String) -> DnaTranscriptionResult {
   let split = sequence |> tools.normalize_sequence() |> string.split_once("ATG")
   case split {
     Error(_) -> TranscriptionError(NoStartCodon)
