@@ -9,3 +9,7 @@ When I complete something, I will timestamp it so you can see if I am still work
     -   [ ] Have a standard library of common restriction enzymes for synthetic biology standards (MoClo, BioBrick, etc.)
 -   [x] Create the sequence silent mutator to get rid of enzyme cut sites.
     -   [ ] Make it get rid of every site, not just the first
+-   [ ] Use a sqlite db to record past jobs (`dnalg jobs`)
+    -   [ ] `clear` subcommand with the ability to choose number to remove from the head (`dnalg jobs --clear [INT]`)
+-   [ ] Parse FASTA and GenBank files
+-   [ ] Parse .dna files (SnapGene)
