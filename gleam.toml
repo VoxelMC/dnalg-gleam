@@ -14,6 +14,7 @@ target = "javascript"
 [documentation]
 pages = [
 	{ title = "Primitives", path = "ref/primitives.html", source = "./pages/primitives.md" },
+	{ title = "Reference", path = "ref/reference.html", source = "./pages/reference.md" },
 	{ title = "Roadmap", path = "roadmap.html", source = "./ROADMAP.md" },
 ]
 
