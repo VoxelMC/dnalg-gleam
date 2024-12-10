@@ -1,5 +1,5 @@
-import core/codon.{type Codon, Codon}
-import core/tools
+import dnalg/core/codon.{type Codon, Codon}
+import dnalg/core/tools
 import gleam/string
 
 pub type AminoAcid {
@@ -36,7 +36,8 @@ pub type Residue {
   )
 }
 
-pub fn from_codon(codon: Codon) {
+/// Convert a three-letter codon into an amino acid `Residue`.
+pub fn from_codon(codon: Codon) -> Residue {
   let c = codon.str |> tools.normalize_sequence()
   let assert [first, second, third] = c |> string.split("")
 
