@@ -7,3 +7,5 @@ erl_crash.dump
 !/dist/index.mjs
 !/dist/package.json
 !/dist/README.md
+
+.DS_Store
