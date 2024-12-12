@@ -3,6 +3,7 @@
 /build
 erl_crash.dump
 
+# ensure that only minimum for JS NPM package is present in the dist dir.
 /dist/*
 !/dist/index.mjs
 !/dist/package.json

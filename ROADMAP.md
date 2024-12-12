@@ -29,3 +29,8 @@ When I complete something, I will timestamp it so you can see if I am still work
 
 -   [x] Parse FASTA and GenBank files
 -   [ ] Parse .dna files (SnapGene)
+
+### Outputs
+
+-   [ ] Utility function to convert DnaSequence information to a FASTA output format.
+    -   Still debating if .gb should be an output format.
