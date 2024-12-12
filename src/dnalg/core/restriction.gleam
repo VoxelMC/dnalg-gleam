@@ -10,6 +10,10 @@ import dnalg/core/tools
 // - Parse restriction site format
 // - Produce a restriction site type
 // - Construct it from a string
+pub type RestrictionDirection {
+  Left
+  Right
+}
 
 pub opaque type RestrictionSite {
   RestrictionSite(
@@ -17,6 +21,7 @@ pub opaque type RestrictionSite {
     cut_index: Int,
     asymmetric: Bool,
     length: Int,
+    direction: RestrictionDirection
   )
 }
 
