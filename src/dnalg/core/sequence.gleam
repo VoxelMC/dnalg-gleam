@@ -25,6 +25,7 @@ pub type DnaParseError {
 /// Represents a sequence of DNA which has been validated.
 pub opaque type DnaSequence {
   DnaSequence(sequence: String)
+  NamedDnaSequence(sequence: String, name: String)
 }
 
 /// Construct a new `DnaSequence`
@@ -32,13 +33,39 @@ pub fn new(sequence: String) {
   DnaSequence(sequence |> tools.normalize_sequence())
 }
 
+// TODO: Phase out old one
+pub fn new_named(sequence: String, name: String) {
+  NamedDnaSequence(sequence |> tools.normalize_sequence(), name:)
+}
+
 /// Constructor for an empty `DnaSequence`. Can be used as a placeholder, but 
 /// shouldn't be used often.
 pub const empty = DnaSequence("")
 
-/// Gets the raw sequence from a constructed `DnaSequence`
-pub fn raw(dna_seq: DnaSequence) {
-  dna_seq.sequence
+/// Unwraps the raw sequence from a constructed `DnaSequence`
+pub fn unwrap(seq: DnaSequence) {
+  seq.sequence
+}
+
+/// Gets the raw sequence and name from a `DnaSequence`. If given an unnamed
+/// sequence, name will be returned as "Unnamed sequence"
+pub fn unwrap_named(dna_seq: DnaSequence) -> #(String, String) {
+  case dna_seq {
+    DnaSequence(seq) -> #(seq, "Unnamed sequence")
+    NamedDnaSequence(seq, name) -> #(seq, name)
+  }
+}
+
+/// Gets the raw sequence and name from a `DnaSequence`. If given an unnamed
+/// sequence, name will be returned as the provided `fallback_name`.
+pub fn try_unwrap_named(
+  dna_seq: DnaSequence,
+  fallback_name: String,
+) -> #(String, String) {
+  case dna_seq {
+    DnaSequence(seq) -> #(seq, fallback_name)
+    NamedDnaSequence(seq, name) -> #(seq, name)
+  }
 }
 
 /// Gets the raw DNA transcription from a constructed `DnaTranscription`.

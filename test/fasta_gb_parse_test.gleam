@@ -61,7 +61,7 @@ pub fn gb_fixtures_test() {
   let parsed = genbank.parse_sequence(file) |> result.unwrap(sequence.empty)
 
   parsed
-  |> sequence.raw()
+  |> sequence.unwrap()
   |> string.length
   |> should.equal(expected |> string.length)
 }

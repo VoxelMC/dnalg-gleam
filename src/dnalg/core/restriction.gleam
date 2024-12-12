@@ -50,13 +50,12 @@ pub fn can_cut(rs: RestrictionSite) {
 }
 
 pub fn debug(rs: RestrictionSite) {
-  let o = [
+  [
     "Recognition: " <> rs.recognition,
     "Cut Index: " <> rs.cut_index |> int.to_string,
     "Asymmetric: " <> rs.asymmetric |> bool.to_string,
   ]
-
-  o |> string.join("\n")
+  |> string.join("\n")
 }
 
 pub fn get_cut_index(rs: RestrictionSite, start_index: Int) {

@@ -166,7 +166,7 @@ pub fn cmd_parse_r_preset() {
   let preset = input.get(args)
   case preset {
     Ok(name) -> {
-      case presets.restriction_enzymes(name) {
+      case presets.restriction_enzyme(name) {
         Ok(enzyme) -> enzyme |> restriction.debug()
         Error(restriction.PresetNotExists(n)) ->
           { "\"" <> ansi.yellow(n) <> "\" is not a preset." }

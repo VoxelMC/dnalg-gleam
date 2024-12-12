@@ -24,7 +24,7 @@ pub fn get_source(file: File) {
 
 /// Get the raw sequence from a file.
 pub fn get_raw(file: File) -> String {
-  file.sequence |> sequence.raw
+  file.sequence |> sequence.unwrap
 }
 
 /// Always constructs a `Fasta` type.
