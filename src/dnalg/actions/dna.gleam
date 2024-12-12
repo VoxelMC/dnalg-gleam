@@ -1,22 +1,24 @@
-import core/codon
-import core/residue.{type Residue, Residue, Stop}
-import core/sequence
-import core/tools
 import gleam/list
 import gleam/string
 
-// TODO: Move this to core/sequence and add DnaSequence type
-pub type DnaTranslation {
-  Translation(translation: List(String), trimmed: Int)
-  TranslationError(DnaParseError)
+import dnalg/core/codon
+import dnalg/core/residue.{type Residue, Residue, Stop}
+import dnalg/core/sequence.{
+  type DnaParseError, type DnaTranscriptionResult, InvalidBaseError,
+  InvalidLengthError, NoStartCodon, Transcription, TranscriptionError,
 }
+import dnalg/core/tools
 
 // NOTE: Future signature: 
-// pub fn translate(sequence: DnaSequence) -> DnaTranslation
-pub fn translate(sequence: String) -> DnaTranslation {
+// pub fn transcribe(sequence: DnaSequence) -> DnaTranscription
+// Review the name here as well. This is not really a transcription nor
+// translation. Maybe just rename to reading_frame() or orf() ????
+/// Retrieve the first reading frame from a DNA Sequence. Requires a start and
+/// stop codon to succeed.
+pub fn transcribe(sequence: String) -> DnaTranscriptionResult {
   let split = sequence |> tools.normalize_sequence() |> string.split_once("ATG")
   case split {
-    Error(_) -> TranslationError(NoStartCodon)
+    Error(_) -> TranscriptionError(NoStartCodon)
     Ok(s) -> {
       let after = s.1 |> string.split("")
       let invalid_bases =
@@ -34,21 +36,14 @@ pub fn translate(sequence: String) -> DnaTranslation {
           let res = after |> into_codons(["ATG"])
           case res {
             Ok(codons) ->
-              Translation(translation: codons, trimmed: s.0 |> string.length())
-            Error(err) -> TranslationError(err)
+              Transcription(transcript: codons, trimmed: s.0 |> string.length())
+            Error(err) -> TranscriptionError(err)
           }
         }
-        bases -> TranslationError(InvalidBaseError(bases))
+        bases -> TranscriptionError(InvalidBaseError(bases))
       }
     }
   }
-}
-
-pub type DnaParseError {
-  UnknownParseError
-  InvalidBaseError(base: String)
-  InvalidLengthError(length: Int)
-  NoStartCodon
 }
 
 fn into_codons(
@@ -68,6 +63,7 @@ fn into_codons(
   }
 }
 
+/// Transform a list of residues into a DNA Sequence.
 pub fn reverse_translate(residues: List(Residue)) -> String {
   residues
   |> list.map(fn(r) { r.codon })
