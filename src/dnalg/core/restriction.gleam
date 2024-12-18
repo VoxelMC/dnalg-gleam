@@ -21,7 +21,7 @@ pub opaque type RestrictionSite {
     cut_index: Int,
     asymmetric: Bool,
     length: Int,
-    direction: RestrictionDirection
+    direction: RestrictionDirection,
   )
 }
 
@@ -99,7 +99,13 @@ fn parse_restriction_string(input: String) {
       let asymmetric = False
       let length = recognition |> string.length
 
-      Ok(RestrictionSite(recognition:, cut_index:, asymmetric:, length:))
+      Ok(RestrictionSite(
+        recognition:,
+        cut_index:,
+        asymmetric:,
+        length:,
+        direction: Right,
+      ))
     }
     2, True -> {
       let assert [pre, post] = spl
@@ -112,7 +118,13 @@ fn parse_restriction_string(input: String) {
 
       let length = recognition |> string.length
 
-      Ok(RestrictionSite(recognition:, cut_index:, asymmetric:, length:))
+      Ok(RestrictionSite(
+        recognition:,
+        cut_index:,
+        asymmetric:,
+        length:,
+        direction: Right,
+      ))
     }
     _, False ->
       Error(InvalidBase(
