@@ -154,6 +154,7 @@ pub fn cmd_parse_r_site() {
   |> io.println
 }
 
+@internal
 pub fn cmd_parse_r_preset() {
   use <- glint.command_help(
     "Check if a restriction enzyme preset is available based on its name.",
