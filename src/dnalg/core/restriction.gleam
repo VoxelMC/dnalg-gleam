@@ -67,6 +67,21 @@ pub fn get_cut_index(rs: RestrictionSite, start_index: Int) {
   start_index + rs.cut_index
 }
 
+pub fn face_right(site: RestrictionSite) {
+  RestrictionSite(..site, direction: Right)
+}
+
+pub fn face_left(site: RestrictionSite) {
+  RestrictionSite(..site, direction: Left)
+}
+
+pub fn flip(site: RestrictionSite) {
+  case site.direction {
+    Left -> face_right(site)
+    Right -> face_left(site)
+  }
+}
+
 /// A restriction string requires the following.
 /// The recognition site, written in canonical DNA bases A, C, G, and T.
 /// The cut site, denoted by a ^
