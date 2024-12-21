@@ -38,9 +38,17 @@ pub fn new_named(sequence: String, name: String) {
   NamedDnaSequence(sequence |> tools.normalize_sequence(), name:)
 }
 
-/// Constructor for an empty `DnaSequence`. Can be used as a placeholder, but 
+/// A pre-constructed empty `DnaSequence`. Can be used as a placeholder, but 
 /// shouldn't be used often.
 pub const empty = DnaSequence("")
+
+/// A pre-constructed `DnaSequence` containing the first 60 bases of lambda-DNA
+/// `gggcggcgacctcgcgggttttcgctatttatgaaaattttccggtttaaggcgtttccg`
+/// 
+/// Mostly used for testing.
+pub const sample = DnaSequence(
+  "gggcggcgacctcgcgggttttcgctatttatgaaaattttccggtttaaggcgtttccg",
+)
 
 /// Unwraps the raw sequence from a constructed `DnaSequence`
 pub fn unwrap(seq: DnaSequence) {
