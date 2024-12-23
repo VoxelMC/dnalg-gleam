@@ -183,3 +183,25 @@ pub fn cmd_parse_r_preset() {
   }
   |> io.println
 }
+
+pub fn cmd_reverse_complement() {
+  use <- glint.command_help(
+    "Check if a restriction enzyme preset is available based on its name.",
+  )
+  use _, args, flags <- glint.command()
+
+  let assert Ok(silent_splash) = glint.get_flag(flags, flags.silent_splash())
+  splash(silent_splash)
+
+  let seq = input.get(args)
+
+  case seq {
+    Ok(seq) -> {
+      s.new(seq) |> s.reverse_complement() |> s.unwrap()
+    }
+    Error(_) -> {
+      "No sequence provided." |> tools.as_error
+    }
+  }
+  |> io.println()
+}

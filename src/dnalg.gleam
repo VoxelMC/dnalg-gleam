@@ -65,6 +65,7 @@ pub fn run(args: List(String)) {
   // Can be filtered upon using a flag.
   |> glint.add(at: ["parse", "rsite"], do: cli.cmd_parse_r_site())
   |> glint.add(at: ["parse", "rpreset"], do: cli.cmd_parse_r_preset())
+  |> glint.add(at: ["parse", "reverse"], do: cli.cmd_reverse_complement())
   |> glint.group_flag([], flags.silent_splash())
   |> glint.group_flag([], flags.output())
   |> glint.run(case args |> list.length {
