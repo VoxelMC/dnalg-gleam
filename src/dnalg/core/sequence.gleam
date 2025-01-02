@@ -117,6 +117,23 @@ pub fn validate_sequence(sequence: String) -> String {
   })
 }
 
+pub fn complement(sequence: DnaSequence) -> DnaSequence {
+  sequence.sequence
+  |> string.to_graphemes()
+  |> list.map(fn(base) {
+    case base {
+      "A" -> "T"
+      "T" -> "A"
+      "G" -> "C"
+      "C" -> "G"
+      "N" -> "N"
+      _ -> ""
+    }
+  })
+  |> string.join("")
+  |> new
+}
+
 /// Returns the reverse complement of a DNA sequence in 5' -> 3'. Strips all
 /// unknown bases other than "N". Try to handle invalid sequences before using
 /// this function.
