@@ -37,3 +37,15 @@ pub const gga_sim_example = GGASimulation(
     #("gggg", "tctt"), #("aaaa", "cccc"), #("acac", "cacc"), #("gtgg", "ccca"),
   ],
 )
+
+
+
+// NOTE: Order of operations
+// - Check if there are two sites that face each other
+//  - Leftmost site points right, rightmost site point left. OR, the opposite.
+// - Need to check if the cut goes over the index break (end through to the
+//   beginning of the plasmid)
+//  - If yes, rotate 90 degrees? Binary until they are all on the same side?
+//    Need to figure this out.
+// - Simulate the cuts at the indices, and remove the sticky ends.
+// - Construct GGASimulation and return it
