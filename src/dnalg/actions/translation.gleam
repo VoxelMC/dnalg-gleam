@@ -1,5 +1,6 @@
 import dnalg/core/residue.{type Residue}
 import gleam/list
+import gleam/string
 
 /// Splits a list of residues at an index, and returns a triple with the target
 /// in the middle.
@@ -12,4 +13,10 @@ pub fn isolate_residue(seq_translation: List(Residue), index: Int) {
   let #(before, rest) = seq_translation |> list.split(index)
   let #(middle, after) = rest |> list.split(1)
   #(before, middle, after)
+}
+
+pub fn to_string(translation: List(Residue)) {
+  translation
+  |> list.map(fn(res) { res.letter })
+  |> string.join(with: "")
 }

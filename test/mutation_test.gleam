@@ -1,4 +1,4 @@
-import dnalg/commands/restriction
+import dnalg/commands/restriction_mutate as restriction
 import dnalg/core/codon
 import dnalg/core/tools
 import gleam/bit_array

@@ -1,15 +1,21 @@
+import dnalg/core/feature.{type Feature}
 import dnalg/core/sequence
 
 pub opaque type File {
   Fasta(title: String, sequence: sequence.DnaSequence)
-  GenBank(accession: String, sequence: sequence.DnaSequence, source: String)
+  GenBank(
+    accession: String,
+    sequence: sequence.DnaSequence,
+    source: String,
+    features: List(Feature),
+  )
 }
 
 /// Returns the title for `.fasta` and the accession for `.gb`.
 pub fn get_accession(file: File) -> String {
   case file {
     Fasta(title, _) -> title
-    GenBank(accession, _, _) -> accession
+    GenBank(accession, _, _, _) -> accession
   }
 }
 
@@ -18,7 +24,7 @@ pub fn get_accession(file: File) -> String {
 pub fn get_source(file: File) {
   case file {
     Fasta(title, _) -> title
-    GenBank(_, _, source) -> source
+    GenBank(_, _, source, _) -> source
   }
 }
 
@@ -38,11 +44,11 @@ pub fn genbank(
   sequence sequence: sequence.DnaSequence,
   source source: String,
 ) -> File {
-  GenBank(accession:, sequence:, source:)
+  GenBank(accession:, sequence:, source:, features: [])
 }
 
 /// Constructs an empty `.gb` file.
-pub const gb_empty = GenBank("", sequence.empty, "")
+pub const gb_empty = GenBank("", sequence.empty, "", [])
 
 /// Constructs an empty `.fasta` file.
 pub const fasta_empty = Fasta("", sequence.empty)

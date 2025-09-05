@@ -24,9 +24,7 @@ pub type Simulation {
 // - The element should be present though, as an automatic True value, so we
 // don't have to handle the edge cases in the end. We can also add this array
 // into the Simulation type, so we don't calculate it in processing.
-//
-//
-//
+
 pub const gga_sim_example = GGASimulation(
   origin: sequence.sample,
   fragments: [
@@ -34,12 +32,12 @@ pub const gga_sim_example = GGASimulation(
     "gggcggcgacctcgcgggttttcgctattt", "atgaaaattttccggtttaaggcgtttccg",
   ],
   sticky_ends: [
-    #("gggg", "tctt"), #("aaaa", "cccc"), #("acac", "cacc"), #("gtgg", "ccca"),
+    #("gggg", "tctt"),
+    #("aaaa", "cccc"),
+    #("acac", "cacc"),
+    #("gtgg", "ccca"),
   ],
 )
-
-
-
 // NOTE: Order of operations
 // - Check if there are two sites that face each other
 //  - Leftmost site points right, rightmost site point left. OR, the opposite.

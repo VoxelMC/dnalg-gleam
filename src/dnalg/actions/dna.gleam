@@ -1,13 +1,25 @@
+import dnalg/actions/translation
+import gleam/io
+import gleam/iterator
 import gleam/list
+import gleam/result
 import gleam/string
 
 import dnalg/core/codon
 import dnalg/core/residue.{type Residue, Residue, Stop}
 import dnalg/core/sequence.{
-  type DnaParseError, type DnaTranscriptionResult, InvalidBaseError,
-  InvalidLengthError, NoStartCodon, Transcription, TranscriptionError,
+  type DnaParseError, type DnaSequence, type DnaTranscriptionResult,
+  InvalidBaseError, InvalidLengthError, NoStartCodon, Transcription,
+  TranscriptionError,
 }
 import dnalg/core/tools
+
+// FIX: THIS NEEDS TO BE MOVED!!!!
+// Also consider using phantom types for translations instead of using
+// translation error type. Or something??
+pub type TranslationError {
+  NoStart
+}
 
 // NOTE: Future signature: 
 // pub fn transcribe(sequence: DnaSequence) -> DnaTranscription
@@ -44,6 +56,53 @@ pub fn transcribe(sequence: String) -> DnaTranscriptionResult {
       }
     }
   }
+}
+
+pub fn translate(seq: DnaSequence) {
+  let raw = sequence.unwrap(seq)
+  let reader =
+    string.to_graphemes(raw)
+    |> list.window(3)
+    |> list.map(fn(el) { el |> string.join("") })
+    |> iterator.from_list()
+  let res =
+    reader
+    |> iterator.index
+    |> iterator.find(fn(el) {
+      let #(str, _i) = el
+      str == "ATG"
+    })
+
+  case res {
+    Ok(#(_, i)) -> {
+      // let i = i + 1
+      let codons =
+        reader
+        |> iterator.drop(i)
+        |> iterator.to_list
+        |> list.index_fold([], fn(acc, el, i) {
+          case i % 3 {
+            0 -> acc |> list.append([el])
+            _ -> acc
+          }
+        })
+        |> io.debug
+      Ok(codons |> list.map(residue.from_raw_codon))
+    }
+    Error(_) -> Error(NoStart)
+  }
+  // io.debug(#(reader, res))
+}
+
+pub fn main() {
+  translate(sequence.new(
+    "ATG TGA ACA AGG GAA GTT TGA GCC AAT GCC AGT ACC GCC AGT ATT GCC TAG",
+  ))
+  |> result.unwrap([])
+  |> translation.to_string()
+  |> io.debug
+  //                      123456789012
+  //                                 ^ 12
 }
 
 fn into_codons(
